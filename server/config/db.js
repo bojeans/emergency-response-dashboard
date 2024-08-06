@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import pkg from "mssql";
 const { ConnectionPool } = pkg;
 
