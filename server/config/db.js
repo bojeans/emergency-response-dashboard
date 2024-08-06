@@ -1,4 +1,5 @@
-import { ConnectionPool } from "mssql";
+import pkg from "mssql";
+const { ConnectionPool } = pkg;
 
 const config = {
   user: process.env.DB_USER,

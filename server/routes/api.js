@@ -1,10 +1,11 @@
 import express from "express";
 import { executeQuery } from "../config/db.js";
 import sql from "mssql";
+import { generateToken } from "../utils/auth.js";
 
 const router = express.Router();
 
-router.get("/api/incidents", async (req, res) => {
+router.get("/incidents", async (req, res) => {
   try {
     const query = "SELECT * FROM Incidents";
     const incidents = await executeQuery(query);
@@ -14,7 +15,7 @@ router.get("/api/incidents", async (req, res) => {
   }
 });
 
-router.post("/api/auth/login", async (req, res) => {
+router.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     const query =
