@@ -1,4 +1,5 @@
 import { ConnectionPool } from "mssql";
+
 const config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -12,4 +13,24 @@ const poolPromise = new ConnectionPool(config)
     console.log("Connected to SQL Server");
     return pool;
   })
-  .catch((err) => console.log("Database Connection Failed! Bad Config"));
+  .catch((err) => {
+    console.error("Database Connection Failed! Bad Config: ", err);
+    throw err;
+  });
+
+const executeQuery = async (query, params = []) => {
+  try {
+    const pool = await poolPromise;
+    const request = pool.request();
+    params.forEach((param) => {
+      request.input(param.name, param.type, param.value);
+    });
+    const result = await request.query(query);
+    return result.recordset;
+  } catch (err) {
+    console.error("SQL error: ", err);
+    throw err;
+  }
+};
+
+export { executeQuery };
