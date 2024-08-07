@@ -1,10 +1,14 @@
 import express from "express";
 const router = express.Router();
 
-// Define a simple route
 try {
-  router.get("/hello", (req, res) => {
-    res.json({ message: "Hello, world!" });
+  router.post("/login", (req, res) => {
+    const { email, password } = req.body;
+    if (email === "admin@example.com" && password === "password") {
+      res.json({ message: "Login successful!" });
+    } else {
+      res.status(401).json({ message: "Login failed" });
+    }
   });
 } catch (error) {
   console.log(error);

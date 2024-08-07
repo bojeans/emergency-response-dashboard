@@ -24,6 +24,11 @@ const __dirname = path.dirname(__filename);
 // Serve static files from the client directory
 app.use(express.static(path.join(__dirname, "..", "client")));
 
+// Serve the dashboard.html file from the client directory
+app.get("/dashboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "client", "dashboard.html"));
+});
+
 // Serve the index.html file from the client directory
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "client", "index.html"));
