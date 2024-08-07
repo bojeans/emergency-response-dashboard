@@ -32,9 +32,24 @@
           <button type="submit" class="btn btn-primary">Login</button>
         </form>
       </div>
+      <div id="dashboard" class="mt-5" style="display: none">
+        <h2>Incidents</h2>
+        <canvas id="incidentChart"></canvas>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Incident</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="incidentTableBody"></tbody>
+        </table>
+      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>

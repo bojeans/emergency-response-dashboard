@@ -1,17 +1,19 @@
 import express from "express";
+
 const router = express.Router();
 
-try {
-  router.post("/login", (req, res) => {
-    const { email, password } = req.body;
-    if (email === "admin@example.com" && password === "password") {
-      res.json({ message: "Login successful!" });
-    } else {
-      res.status(401).json({ message: "Login failed" });
-    }
-  });
-} catch (error) {
-  console.log(error);
-}
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  console.log(`Login attempt: ${email} / ${password}`);
+
+  // Simulate authentication logic
+  if (email === "admin@example.com" && password === "password") {
+    console.log("Login successful");
+    res.json({ success: true });
+  } else {
+    console.log("Login failed");
+    res.json({ success: false });
+  }
+});
 
 export default router;
