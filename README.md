@@ -7,7 +7,7 @@
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 
-A simple vanilla JavaScript and jQuery project that fetches data from a weather API and displays it to the logged-in user.
+**In progress as of Aug 2024 -** A simple vanilla JavaScript and jQuery project that fetches data from a weather API and displays it to the logged-in user.
 
 ## Login Details
 You can log in using the following credentials:

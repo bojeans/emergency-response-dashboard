@@ -12,16 +12,47 @@
   </head>
   <body>
     <div class="container">
-      <h1 class="mt-5">Dashboard</h1>
+      <h1>Dashboard</h1>
       <div id="dashboard" class="mt-5">
         <h2>Incidents</h2>
-        <canvas id="incidentChart"></canvas>
+
+        <div class="filters mb-4">
+          <label for="zoneFilter" class="form-label me-2">Zone:</label>
+          <select id="zoneFilter" class="form-select me-4">
+            <option value="All">All</option>
+            <option value="Oceania">Oceania</option>
+            <option value="Asia">Asia</option>
+            <option value="Europe">Europe</option>
+            <option value="Africa">Africa</option>
+            <option value="North America">North America</option>
+            <option value="South America">South America</option>
+          </select>
+
+          <label for="incidentFilter" class="form-label me-2">Incident:</label>
+          <select id="incidentFilter" class="form-select me-4">
+            <option value="All">All</option>
+            <option value="Hurricane">Hurricane</option>
+            <option value="Fires">Fires</option>
+            <option value="Earthquakes">Earthquakes</option>
+            <!-- Add other incident types as needed -->
+          </select>
+
+          <label for="statusFilter" class="form-label me-2">Status:</label>
+          <select id="statusFilter" class="form-select me-4">
+            <option value="All">All</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+
+        <canvas id="incidentChart" class="mb-4"></canvas>
         <table class="table">
           <thead>
             <tr>
+              <th>Zone</th>
               <th>Incident</th>
               <th>Status</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody id="incidentTableBody"></tbody>
