@@ -35,14 +35,10 @@ async function fetchData() {
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
-    // Adding diversity
-    incidentData = data.DisasterDeclarationsSummaries.map((item, index) => ({
-      state: index % 2 === 0 ? "VA" : "CA",
-      incident: index % 3 === 0 ? "Hurricane" : "Earthquake",
-      status: ["Low", "Medium", "High"][index % 3],
-      date: item.declarationDate,
-    }));
-    filteredData = incidentData; // Initializing filteredData
+
+    // Apply randomization to the fetched data
+    incidentData = randomizeData(data.DisasterDeclarationsSummaries);
+    filteredData = incidentData; // Initialize filteredData
     displayTableData();
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -54,6 +50,33 @@ function formatDate(dateString) {
   const options = { year: "numeric", month: "long", day: "numeric" };
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", options);
+}
+
+// Function to get a random date within a specified range
+function getRandomDate(startDate, endDate) {
+  const start = new Date(startDate).getTime();
+  const end = new Date(endDate).getTime();
+  const randomTime = start + Math.random() * (end - start);
+  return new Date(randomTime).toISOString().split("T")[0];
+}
+
+// Function to get a random item from an array
+function getRandomItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// Function to randomize data
+function randomizeData(data) {
+  const states = ["VA", "CA", "TX", "FL", "NY", "WA", "OR"];
+  const incidents = ["Hurricane", "Earthquake", "Fire", "Flood", "Tornado"];
+  const statuses = ["Low", "Medium", "High"];
+
+  return data.map((item) => ({
+    state: getRandomItem(states),
+    incident: getRandomItem(incidents),
+    status: getRandomItem(statuses),
+    date: getRandomDate("2023-01-01", "2024-12-31"),
+  }));
 }
 
 // Function to display data in the table
