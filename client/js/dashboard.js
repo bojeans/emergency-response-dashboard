@@ -1,3 +1,4 @@
+// Constants and global variables
 const apiUrl =
   "https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries?$filter=disasterNumber eq 1491";
 
@@ -5,6 +6,12 @@ let incidentData = [];
 let currentPage = 1;
 const rowsPerPage = 10;
 let filteredData = [];
+
+// Initialization
+function init() {
+  attachEventListeners();
+  fetchData();
+}
 
 // Function to handle the logout
 async function handleLogout() {
@@ -26,9 +33,20 @@ async function handleLogout() {
 }
 
 // Attach the event handler to the logout button
-document
-  .querySelector("button.btn-primary")
-  .addEventListener("click", handleLogout);
+function attachEventListeners() {
+  document
+    .querySelector("button.btn-primary")
+    .addEventListener("click", handleLogout);
+
+  document.getElementById("zoneFilter").addEventListener("change", filterData);
+  document
+    .getElementById("incidentFilter")
+    .addEventListener("change", filterData);
+  document
+    .getElementById("statusFilter")
+    .addEventListener("change", filterData);
+  document.getElementById("dateFilter").addEventListener("change", filterData);
+}
 
 // Function to fetch data from API
 async function fetchData() {
@@ -52,6 +70,20 @@ function formatDate(dateString) {
   return date.toLocaleDateString("en-US", options);
 }
 
+// Function to randomize data
+function randomizeData(data) {
+  const states = ["VA", "CA", "TX", "FL", "NY", "WA", "OR"];
+  const incidents = ["Hurricane", "Earthquake", "Fire", "Flood", "Tornado"];
+  const statuses = ["Low", "Medium", "High"];
+
+  return data.map((item) => ({
+    state: getRandomItem(states),
+    incident: getRandomItem(incidents),
+    status: getRandomItem(statuses),
+    date: getRandomDate("2000-01-01", "2024-12-31"),
+  }));
+}
+
 // Function to get a random date within a specified range
 function getRandomDate(startDate, endDate) {
   const start = new Date(startDate).getTime();
@@ -63,20 +95,6 @@ function getRandomDate(startDate, endDate) {
 // Function to get a random item from an array
 function getRandomItem(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
-}
-
-// Function to randomize data
-function randomizeData(data) {
-  const states = ["VA", "CA", "TX", "FL", "NY", "WA", "OR"];
-  const incidents = ["Hurricane", "Earthquake", "Fire", "Flood", "Tornado"];
-  const statuses = ["Low", "Medium", "High"];
-
-  return data.map((item) => ({
-    state: getRandomItem(states),
-    incident: getRandomItem(incidents),
-    status: getRandomItem(statuses),
-    date: getRandomDate("2023-01-01", "2024-12-31"),
-  }));
 }
 
 // Function to display data in the table
@@ -109,11 +127,7 @@ function setupPagination() {
   paginationControls.innerHTML = "";
 
   // Previous button
-  const prevPageItem = document.createElement("li");
-  prevPageItem.className = "page-item" + (currentPage === 1 ? " disabled" : "");
-  prevPageItem.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
-  prevPageItem.addEventListener("click", function (e) {
-    e.preventDefault();
+  const prevPageItem = createPaginationItem("«", currentPage === 1, () => {
     if (currentPage > 1) {
       currentPage--;
       displayTableData();
@@ -123,11 +137,7 @@ function setupPagination() {
 
   // Page numbers
   for (let i = 1; i <= pageCount; i++) {
-    const pageItem = document.createElement("li");
-    pageItem.className = "page-item" + (i === currentPage ? " active" : "");
-    pageItem.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-    pageItem.addEventListener("click", function (e) {
-      e.preventDefault();
+    const pageItem = createPaginationItem(i, i === currentPage, () => {
       currentPage = i;
       displayTableData();
     });
@@ -135,18 +145,29 @@ function setupPagination() {
   }
 
   // Next button
-  const nextPageItem = document.createElement("li");
-  nextPageItem.className =
-    "page-item" + (currentPage === pageCount ? " disabled" : "");
-  nextPageItem.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
-  nextPageItem.addEventListener("click", function (e) {
-    e.preventDefault();
-    if (currentPage < pageCount) {
-      currentPage++;
-      displayTableData();
+  const nextPageItem = createPaginationItem(
+    "»",
+    currentPage === pageCount,
+    () => {
+      if (currentPage < pageCount) {
+        currentPage++;
+        displayTableData();
+      }
     }
-  });
+  );
   paginationControls.appendChild(nextPageItem);
+}
+
+// Helper function to create a pagination item
+function createPaginationItem(content, isDisabled, onClick) {
+  const item = document.createElement("li");
+  item.className = `page-item${isDisabled ? " disabled" : ""}`;
+  item.innerHTML = `<a class="page-link" href="#" aria-label="${content}"><span aria-hidden="true">${content}</span></a>`;
+  item.addEventListener("click", function (e) {
+    e.preventDefault();
+    if (!isDisabled) onClick();
+  });
+  return item;
 }
 
 // Function to filter data based on selected filters
@@ -173,28 +194,5 @@ function filterData() {
   displayTableData();
 }
 
-function getStatus(date) {
-  const now = new Date();
-  const declarationDate = new Date(date);
-  const diffTime = Math.abs(now - declarationDate);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  if (diffDays < 30) {
-    return "High";
-  } else if (diffDays < 90) {
-    return "Medium";
-  } else {
-    return "Low";
-  }
-}
-
-// Attach event listeners to filters
-document.getElementById("zoneFilter").addEventListener("change", filterData);
-document
-  .getElementById("incidentFilter")
-  .addEventListener("change", filterData);
-document.getElementById("statusFilter").addEventListener("change", filterData);
-document.getElementById("dateFilter").addEventListener("change", filterData);
-
-// Initial data fetch
-fetchData();
+// Initialize the application
+init();
