@@ -37,7 +37,7 @@ async function fetchData() {
     const data = await response.json();
     // Adding diversity
     incidentData = data.DisasterDeclarationsSummaries.map((item, index) => ({
-      zone: index % 2 === 0 ? "VA" : "CA",
+      state: index % 2 === 0 ? "VA" : "CA",
       incident: index % 3 === 0 ? "Hurricane" : "Earthquake",
       status: ["Low", "Medium", "High"][index % 3],
       date: item.declarationDate,
@@ -47,6 +47,13 @@ async function fetchData() {
   } catch (error) {
     console.error("Error fetching data:", error);
   }
+}
+
+// Function to format date to a more readable format
+function formatDate(dateString) {
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", options);
 }
 
 // Function to display data in the table
@@ -61,9 +68,10 @@ function displayTableData() {
   currentPageData.forEach((incident) => {
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${incident.zone}</td>
+      <td>${incident.state}</td>
       <td>${incident.incident}</td>
       <td>${incident.status}</td>
+      <td>${formatDate(incident.date)}</td>
     `;
     tableBody.appendChild(row);
   });
@@ -123,18 +131,38 @@ function filterData() {
   const zoneFilter = document.getElementById("zoneFilter").value;
   const incidentFilter = document.getElementById("incidentFilter").value;
   const statusFilter = document.getElementById("statusFilter").value;
+  const dateFilter = document.getElementById("dateFilter").value;
 
   filteredData = incidentData.filter((incident) => {
-    const matchesZone = zoneFilter === "All" || incident.zone === zoneFilter;
+    const matchesZone = zoneFilter === "All" || incident.state === zoneFilter;
     const matchesIncident =
       incidentFilter === "All" || incident.incident === incidentFilter;
     const matchesStatus =
       statusFilter === "All" || incident.status === statusFilter;
-    return matchesZone && matchesIncident && matchesStatus;
+    const matchesDate =
+      !dateFilter ||
+      new Date(incident.date).toISOString().split("T")[0] === dateFilter;
+
+    return matchesZone && matchesIncident && matchesStatus && matchesDate;
   });
 
   currentPage = 1; // Reset to the first page after filtering
   displayTableData();
+}
+
+function getStatus(date) {
+  const now = new Date();
+  const declarationDate = new Date(date);
+  const diffTime = Math.abs(now - declarationDate);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 30) {
+    return "High";
+  } else if (diffDays < 90) {
+    return "Medium";
+  } else {
+    return "Low";
+  }
 }
 
 // Attach event listeners to filters
@@ -143,6 +171,7 @@ document
   .getElementById("incidentFilter")
   .addEventListener("change", filterData);
 document.getElementById("statusFilter").addEventListener("change", filterData);
+document.getElementById("dateFilter").addEventListener("change", filterData);
 
 // Initial data fetch
 fetchData();

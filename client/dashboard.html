@@ -21,11 +21,13 @@
         <h2>Incidents</h2>
 
         <div class="filters mb-4">
-          <label for="zoneFilter" class="form-label me-2">Zone:</label>
+          <label for="zoneFilter" class="form-label me-2">State:</label>
           <select id="zoneFilter" class="form-select me-4">
             <option value="All">All</option>
             <option value="VA">VA</option>
             <option value="CA">CA</option>
+            <option value="TX">TX</option>
+            <option value="FL">FL</option>
           </select>
 
           <label for="incidentFilter" class="form-label me-2">Incident:</label>
@@ -33,6 +35,8 @@
             <option value="All">All</option>
             <option value="Hurricane">Hurricane</option>
             <option value="Earthquake">Earthquake</option>
+            <option value="Fire">Fire</option>
+            <option value="Flood">Flood</option>
           </select>
 
           <label for="statusFilter" class="form-label me-2">Status:</label>
@@ -43,14 +47,17 @@
             <option value="High">High</option>
           </select>
         </div>
+        <label for="dateFilter" class="form-label me-2">Date:</label>
+        <input type="date" id="dateFilter" class="form-control me-4" />
 
         <canvas id="incidentChart" class="mb-4"></canvas>
         <table class="table">
           <thead>
             <tr>
-              <th>Zone</th>
+              <th>State</th>
               <th>Incident</th>
               <th>Status</th>
+              <th>Date</th>
             </tr>
           </thead>
           <tbody id="incidentTableBody"></tbody>
@@ -60,7 +67,7 @@
           <ul class="pagination" id="paginationControls"></ul>
         </nav>
 
-        <button type="submit" class="btn btn-primary mt-4">Logout</button>
+        <button type="button" class="btn btn-primary mt-4">Logout</button>
       </div>
     </div>
 
